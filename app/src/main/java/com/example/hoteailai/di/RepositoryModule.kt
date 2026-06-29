@@ -3,9 +3,11 @@ package com.example.hoteailai.di
 import com.example.hoteailai.data.repository.AuthRepositoryImpl
 import com.example.hoteailai.data.repository.BookingRepositoryImpl
 import com.example.hoteailai.data.repository.HotelRepositoryImpl
+import com.example.hoteailai.data.repository.UserRepositoryImpl
 import com.example.hoteailai.domain.repository.AuthRepository
 import com.example.hoteailai.domain.repository.BookingRepository
 import com.example.hoteailai.domain.repository.HotelRepository
+import com.example.hoteailai.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -33,4 +35,10 @@ abstract class RepositoryModule {
     abstract fun bindBookingRepository(
         bookingRepositoryImpl: BookingRepositoryImpl
     ): BookingRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUserRepository(
+        userRepositoryImpl: UserRepositoryImpl
+    ): UserRepository
 }

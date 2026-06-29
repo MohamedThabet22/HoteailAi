@@ -46,85 +46,99 @@ fun SearchScreen(
     var showFilters by remember { mutableStateOf(false) }
 
     Scaffold(
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = { /* Map */ },
-                icon = { Icon(Icons.Default.Map, contentDescription = null, tint = SecondaryGold) },
-                text = { Text("EXPLORE MAP", fontWeight = FontWeight.Bold) },
-                containerColor = Color(0xFF4C6793),
-                contentColor = Color.White,
-                shape = RoundedCornerShape(30.dp),
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-        },
-        floatingActionButtonPosition = FabPosition.Center
+
     ) { padding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(BackgroundLight)
+                .background(BackgroundLight),
+            contentPadding = PaddingValues(bottom = 100.dp)
+
         ) {
-            SearchHeader(
-                query = state.query,
-                onQueryChange = viewModel::onQueryChange
-            )
-
-            CategoryList(
-                categories = state.categories,
-                selectedCategoryId = state.selectedCategoryId,
-                onCategoryClick = viewModel::onCategorySelect
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "${state.hotels.size} CURATED STAYS",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Color.Gray,
-                    letterSpacing = 1.5.sp
+            item {
+                SearchHeader(
+                    query = state.query,
+                    onQueryChange = viewModel::onQueryChange
                 )
-                
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "Sort by: ", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
-                    Text(text = "Relevance", style = MaterialTheme.typography.labelSmall, color = SecondaryGold, fontWeight = FontWeight.Bold)
-                    Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = SecondaryGold, modifier = Modifier.size(16.dp))
+
+                CategoryList(
+                    categories = state.categories,
+                    selectedCategoryId = state.selectedCategoryId,
+                    onCategoryClick = viewModel::onCategorySelect,
+                    paddingHorizontal = 12
+                )
+            }
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "${state.hotels.size} CURATED STAYS",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color.Gray,
+                        letterSpacing = 1.5.sp
+                    )
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "Sort by: ",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color.Gray
+                        )
+                        Text(
+                            text = "Relevance",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = SecondaryGold,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Icon(
+                            Icons.Default.ArrowDropDown,
+                            contentDescription = null,
+                            tint = SecondaryGold,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
                 }
             }
-
+            
             if (state.isLoading) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    BeautifulProgressIndicator()
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(400.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        BeautifulProgressIndicator()
+                    }
                 }
             } else if (state.hotels.isEmpty()) {
-                EmptyState(
-                    message = "No Hotels Found",
-                    description = "Try adjusting your filters or search query to find what you're looking for.",
-                    onRetry = { viewModel.search() }
-                )
+                item {
+                    EmptyState(
+                        message = "No Hotels Found",
+                        description = "Try adjusting your filters or search query to find what you're looking for.",
+                        onRetry = { viewModel.search() }
+                    )
+                }
             } else {
-                LazyColumn(
-                    contentPadding = PaddingValues(bottom = 100.dp)
-                ) {
-                    items(state.hotels) { hotel ->
-                        if (hotel.isFeatured) {
-                            FeaturedHotelCard(
-                                hotel = hotel, 
-                                onClick = { onHotelClick(hotel.id) },
-                                onFavoriteClick = { viewModel.toggleFavorite(hotel.id) }
-                            )
-                        } else {
-                            RegularHotelCard(
-                                hotel = hotel, 
-                                onClick = { onHotelClick(hotel.id) },
-                                onFavoriteClick = { viewModel.toggleFavorite(hotel.id) }
-                            )
-                        }
+                items(state.hotels) { hotel ->
+                    if (hotel.isFeatured) {
+                        FeaturedHotelCard(
+                            hotel = hotel,
+                            onClick = { onHotelClick(hotel.id) },
+                            onFavoriteClick = { viewModel.toggleFavorite(hotel.id) }
+                        )
+                    } else {
+                        RegularHotelCard(
+                            hotel = hotel,
+                            onClick = { onHotelClick(hotel.id) },
+                            onFavoriteClick = { viewModel.toggleFavorite(hotel.id) }
+                        )
                     }
                 }
             }
@@ -153,7 +167,7 @@ fun SearchHeader(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(24.dp),
+            .padding(horizontal = 12.dp, vertical = 24.dp),
         color = PrimaryBlue,
         shape = RoundedCornerShape(24.dp)
     ) {

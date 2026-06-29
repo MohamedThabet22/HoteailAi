@@ -1,6 +1,10 @@
 package com.example.hoteailai.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
 import com.example.hoteailai.data.local.HotelDatabase
 import com.google.firebase.auth.FirebaseAuth
@@ -49,4 +53,12 @@ object AppModule {
     @Provides
     @Singleton
     fun provideHotelDao(db: HotelDatabase) = db.hotelDao
+
+    @Provides
+    @Singleton
+    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
+            produceFile = { context.preferencesDataStoreFile("settings") }
+        )
+    }
 }

@@ -1,12 +1,15 @@
 package com.example.hoteailai.presentation.home
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -48,6 +51,25 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val featuredLazyListState = rememberLazyListState()
+    
+    // حساب الـ Index بناءً على العنصر الظاهر الأكبر في المساحة
+    val currentFeaturedIndex by remember {
+        derivedStateOf {
+            val layoutInfo = featuredLazyListState.layoutInfo
+            val visibleItemsInfo = layoutInfo.visibleItemsInfo
+            if (visibleItemsInfo.isEmpty()) {
+                0
+            } else {
+                val fullyVisibleItem = visibleItemsInfo.firstOrNull { 
+                    val offset = it.offset
+                    val size = it.size
+                    offset >= -size / 2 // العنصر الذي يحتل نصف الشاشة تقريباً
+                }
+                fullyVisibleItem?.index ?: 0
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -69,7 +91,7 @@ fun HomeScreen(
             ) {
                 SearchBar(
                     modifier = Modifier
-                        .padding(horizontal = 24.dp, vertical = 16.dp)
+                        .padding(horizontal = 24.dp, vertical = 11.dp)
                         .clickable { onSearchClick() }
                 )
                 
@@ -86,8 +108,18 @@ fun HomeScreen(
                         )
                     }
                 }
-                
-                SectionHeader(title = "Featured Stays", onSeeAllClick = {})
+                Spacer(modifier = Modifier.height(16.dp))
+                SectionHeader(
+                    title = "Featured Stays",
+                    trailingContent = {
+                        if (state.featuredHotels.isNotEmpty()) {
+                            PagerIndicator(
+                                count = state.featuredHotels.size,
+                                currentIndex = currentFeaturedIndex
+                            )
+                        }
+                    }
+                )
                 AnimatedVisibility(
                     visible = !state.isLoading || state.featuredHotels.isNotEmpty(),
                     enter = fadeIn() + slideInVertically { it / 2 } + expandVertically()
@@ -99,6 +131,7 @@ fun HomeScreen(
                     } else {
                         FeaturedHotelsList(
                             hotels = state.featuredHotels, 
+                            state = featuredLazyListState,
                             onHotelClick = onHotelClick,
                             onFavoriteClick = { viewModel.toggleFavorite(it) }
                         )
@@ -142,7 +175,8 @@ fun HomeTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 20.dp),
+            .padding(horizontal = 24.dp).padding(top = 40.dp, bottom = 10.dp),
+
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -194,7 +228,7 @@ fun SearchBar(modifier: Modifier = Modifier) {
         ) {
             Icon(Icons.Default.Search, contentDescription = "Search", tint = PrimaryBlue)
             Spacer(modifier = Modifier.width(12.dp))
-            Text(text = "Where would you like to escape?", color = Color.Gray, fontSize = 14.sp)
+            Text(text = "Search....", color = Color.Gray, fontSize = 14.sp)
             Spacer(modifier = Modifier.weight(1f))
             Surface(modifier = Modifier.size(32.dp), shape = RoundedCornerShape(8.dp), color = PrimaryBlue) {
                 Icon(Icons.Default.FilterList, contentDescription = null, tint = Color.White, modifier = Modifier.padding(6.dp))
@@ -204,7 +238,11 @@ fun SearchBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SectionHeader(title: String, onSeeAllClick: () -> Unit) {
+fun SectionHeader(
+    title: String, 
+    onSeeAllClick: (() -> Unit)? = null,
+    trailingContent: @Composable (() -> Unit)? = null
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -218,23 +256,57 @@ fun SectionHeader(title: String, onSeeAllClick: () -> Unit) {
             color = PrimaryBlue,
             fontWeight = FontWeight.Bold
         )
-        Text(
-            text = "View All",
-            color = SecondaryGold,
-            modifier = Modifier.clickable { onSeeAllClick() },
-            fontWeight = FontWeight.Medium,
-            fontSize = 12.sp
-        )
+        if (trailingContent != null) {
+            trailingContent()
+        } else if (onSeeAllClick != null) {
+            Text(
+                text = "View All",
+                color = SecondaryGold,
+                modifier = Modifier.clickable { onSeeAllClick() },
+                fontWeight = FontWeight.Medium,
+                fontSize = 12.sp
+            )
+        }
+    }
+}
+
+@Composable
+fun PagerIndicator(
+    count: Int,
+    currentIndex: Int,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        repeat(count) { index ->
+            val isSelected = index == currentIndex
+            // إضافة Animation لتغيير اللون والحجم بسلاسة
+            val width by animateDpAsState(targetValue = if (isSelected) 20.dp else 6.dp, label = "width")
+            val color by animateColorAsState(targetValue = if (isSelected) PrimaryBlue else Color.LightGray.copy(alpha = 0.5f), label = "color")
+
+            Box(
+                modifier = Modifier
+                    .height(6.dp)
+                    .width(width)
+                    .clip(CircleShape)
+                    .background(color)
+            )
+        }
     }
 }
 
 @Composable
 fun FeaturedHotelsList(
     hotels: List<Hotel>, 
+    state: LazyListState,
     onHotelClick: (String) -> Unit,
     onFavoriteClick: (String) -> Unit
 ) {
     LazyRow(
+        state = state,
         contentPadding = PaddingValues(horizontal = 24.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {

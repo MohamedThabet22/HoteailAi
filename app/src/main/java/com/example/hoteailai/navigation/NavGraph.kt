@@ -22,8 +22,15 @@ fun NavGraph(navController: NavHostController) {
     ) {
         composable(Screen.Splash.route) {
             SplashScreen(
-                onNavigateNext = { isLoggedIn ->
-                    val destination = if (isLoggedIn) Screen.Home.route else Screen.Login.route
+                onNavigateNext = { isFirstTime, isLoggedIn ->
+                    val destination = if (isLoggedIn) {
+                        Screen.Home.route
+                    } else if (isFirstTime) {
+                        Screen.Login.route
+                    } else {
+                        Screen.Login.route // أو صفحة ترحيبية أخرى إذا رغبت
+                    }
+
                     navController.navigate(destination) {
                         popUpTo(Screen.Splash.route) { inclusive = true }
                     }

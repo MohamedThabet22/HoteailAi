@@ -1,9 +1,10 @@
 package com.example.hoteailai.presentation
 
-import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -74,12 +75,13 @@ fun MainScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 20.dp)
+                    .padding(horizontal = 24.dp, )
+                    .padding(bottom = 16.dp , top = 8.dp)
             ) {
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(72.dp),
+                        .height(74.dp),
                     shape = RoundedCornerShape(24.dp),
                     color = Color.White,
                     shadowElevation = 12.dp,
@@ -91,20 +93,19 @@ fun MainScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         items.forEach { item ->
-                            val isSelected = currentDestination?.hierarchy?.any { it.route == item.screen.route } == true
+                            val isSelected = currentDestination?.hierarchy?.any { it.route == item.screen.route } == true ||
+                                    (item.screen == Screen.Home && currentDestination?.route == Screen.Search.route)
                             
                             CustomBottomNavItem(
                                 item = item,
                                 isSelected = isSelected,
                                 onClick = {
-                                    if (!isSelected) {
-                                        navController.navigate(item.screen.route) {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
-                                            restoreState = true
+                                    navController.navigate(item.screen.route) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
                                         }
+                                        launchSingleTop = true
+                                        restoreState = true
                                     }
                                 }
                             )
@@ -118,7 +119,11 @@ fun MainScreen(
         NavHost(
             navController = navController,
             startDestination = Screen.Home.route,
-            modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())
+            modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding()),
+            enterTransition = { fadeIn(tween(400)) + slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(400)) },
+            exitTransition = { fadeOut(tween(400)) + slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(400)) },
+            popEnterTransition = { fadeIn(tween(400)) + slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(400)) },
+            popExitTransition = { fadeOut(tween(400)) + slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(400)) }
         ) {
             composable(Screen.Home.route) {
                 HomeScreen(

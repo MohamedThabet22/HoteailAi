@@ -35,11 +35,12 @@ import com.example.hoteailai.ui.theme.PrimaryBlue
 fun CategoryList(
     categories: List<Category>,
     selectedCategoryId: String?,
-    onCategoryClick: (String) -> Unit
+    onCategoryClick: (String) -> Unit,
+    paddingHorizontal:  Int? =24,
 ) {
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(horizontal = 24.dp),
+        contentPadding = PaddingValues(horizontal = paddingHorizontal?.dp ?: 24.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(categories) { category ->
@@ -77,9 +78,9 @@ fun CategoryItem(
     ) {
         Surface(
             modifier = Modifier
-                .size(70.dp)
+                .size(64.dp)
                 .shadow(
-                    elevation = if (isSelected) 10.dp else 4.dp,
+                    elevation = if (isSelected) 12.dp else 7.dp,
                     shape = RoundedCornerShape(22.dp),
                     spotColor = PrimaryBlue.copy(alpha = 0.2f)
                 ),

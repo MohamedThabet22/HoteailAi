@@ -6,6 +6,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -71,12 +73,45 @@ fun HotelDetailsScreen(
                     .verticalScroll(rememberScrollState())
             ) {
                 Box(modifier = Modifier.height(450.dp)) {
-                    AsyncImage(
-                        model = hotel.imageUrls.firstOrNull(),
-                        contentDescription = hotel.name,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
+                    val pagerState = rememberPagerState(pageCount = { hotel.imageUrls.size })
+                    
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier.fillMaxSize()
+                    ) { page ->
+                        AsyncImage(
+                            model = hotel.imageUrls[page],
+                            contentDescription = hotel.name,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+
+                    // Pager Indicator for photos
+                    if (hotel.imageUrls.size > 1) {
+                        Row(
+                            Modifier
+                                .wrapContentHeight()
+                                .fillMaxWidth()
+                                .align(Alignment.BottomCenter)
+                                .padding(bottom = 24.dp),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            repeat(hotel.imageUrls.size) { iteration ->
+                                val color = if (pagerState.currentPage == iteration) Color.White else Color.White.copy(alpha = 0.5f)
+                                val width = if (pagerState.currentPage == iteration) 18.dp else 6.dp
+                                Box(
+                                    modifier = Modifier
+                                        .padding(2.dp)
+                                        .clip(CircleShape)
+                                        .background(color)
+                                        .width(width)
+                                        .height(6.dp)
+                                        .animateContentSize()
+                                )
+                            }
+                        }
+                    }
                     
                     Row(
                         modifier = Modifier
@@ -412,7 +447,7 @@ fun BookingBottomBar(price: Double, onBookNowClick: () -> Unit) {
                 Text(text = "Excl. taxes & fees", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
             }
             GoldButton(
-                text = "Book Now \uD83D\uDCC5",
+                text = "Book Now",
                 onClick = onBookNowClick,
                 modifier = Modifier.width(160.dp)
             )

@@ -315,10 +315,10 @@ fun BadgeItem(icon: ImageVector, text: String) {
 
 @Composable
 fun ConfirmPayBottomBar(onClick: () -> Unit, isLoading: Boolean) {
-    Surface(shadowElevation = 8.dp, color = PrimaryBlue) {
+    Surface(shadowElevation = 8.dp, color = BackgroundLight) {
         Box(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
             GoldButton(
-                text = if (isLoading) "Processing..." else "Confirm & Pay \u2192",
+                text = if (isLoading) "Processing..." else "Confirm & Pay",
                 onClick = onClick,
                 enabled = !isLoading
             )

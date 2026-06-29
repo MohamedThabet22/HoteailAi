@@ -101,7 +101,7 @@ fun HotelCard(
                         }
                         Surface(
                             shape = RoundedCornerShape(8.dp), 
-                            color = BackgroundLight
+                            color = Color(0xEDFFF8EA),
                         ) {
                             Row(
                                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp), 
