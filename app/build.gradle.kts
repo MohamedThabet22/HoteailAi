@@ -11,6 +11,7 @@ plugins {
 android {
     namespace = "com.example.hoteailai"
     compileSdk = 37
+    val mapsApiKey = project.findProperty("MAPS_API_KEY") as String? ?: ""
 
     defaultConfig {
         applicationId = "com.example.hoteailai"
@@ -20,7 +21,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        manifestPlaceholders["MAPS_API_KEY"] = "AIzaSyAG_FppdADWpEXt8OMmKvJk-1OcL99GWQo"
+        manifestPlaceholders["MAPS_API_KEY"] = "${mapsApiKey}"
     }
 
     buildTypes {
