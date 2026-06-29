@@ -1,0 +1,87 @@
+{
+  "project_info": {
+    "project_number": "967938712412",
+    "firebase_url": "https://nifty-province-387911-default-rtdb.firebaseio.com",
+    "project_id": "nifty-province-387911",
+    "storage_bucket": "nifty-province-387911.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:967938712412:android:c7f8befa5694fb95219799",
+        "android_client_info": {
+          "package_name": "com.example.hotail"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0MjT0fe4sggSNIcOsidpcPfAwhPg_Fvk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:967938712412:android:7a57b8e081f31451219799",
+        "android_client_info": {
+          "package_name": "com.example.hotailai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0MjT0fe4sggSNIcOsidpcPfAwhPg_Fvk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:967938712412:android:fc150936a819faf7219799",
+        "android_client_info": {
+          "package_name": "com.example.hoteailai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0MjT0fe4sggSNIcOsidpcPfAwhPg_Fvk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:967938712412:android:ee1331d7b3b646e7219799",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0MjT0fe4sggSNIcOsidpcPfAwhPg_Fvk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
